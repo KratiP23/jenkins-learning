@@ -13,7 +13,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Running tests'
+                echo 'Running Jenkins CI tests'
             }
         }
 
