@@ -61,6 +61,16 @@ pipeline {
             }
         }
 
+        stage('Docker Check') {
+        steps {
+            sh '''
+                echo "Checking Docker..."
+                docker --version
+                docker ps
+            '''
+            }
+        }
+
         stage('Deploy to Dev') {
 
             when {
