@@ -4,9 +4,29 @@ pipeline {
         label 'linux-agent'
     }
 
+    parameters {
+
+        string(
+            name: 'VERSION',
+            defaultValue: '1.0.0',
+            description: 'Application version'
+        )
+
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'staging', 'prod'],
+            description: 'Select environment'
+        )
+
+        booleanParam(
+            name: 'RUN_TESTS',
+            defaultValue: true,
+            description: 'Run automated tests'
+        )
+    }
+
     environment {
         APP_NAME = 'demo-app'
-        ENVIRONMENT = 'dev'
     }
 
     stages {
@@ -14,31 +34,31 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Application: ${env.APP_NAME}"
-                echo "Environment: ${env.ENVIRONMENT}"
+                echo "Version: ${params.VERSION}"
+                echo "Environment: ${params.ENVIRONMENT}"
 
                 sh '''
-                    echo "Running build..."
+                    echo "Building application..."
                     echo "Build number: $BUILD_NUMBER"
-                    echo "Workspace: $WORKSPACE"
                 '''
             }
         }
 
         stage('Test') {
             steps {
-                echo "Testing ${env.APP_NAME}"
+                echo "RUN_TESTS = ${params.RUN_TESTS}"
 
                 sh '''
                     echo "Running tests..."
-                    echo "Tests completed successfully"
                 '''
             }
         }
 
         stage('Information') {
             steps {
-                echo "Job: ${env.JOB_NAME}"
-                echo "Node: ${env.NODE_NAME}"
+                echo "Application: ${env.APP_NAME}"
+                echo "Version: ${params.VERSION}"
+                echo "Environment: ${params.ENVIRONMENT}"
                 echo "Build: ${env.BUILD_NUMBER}"
             }
         }
