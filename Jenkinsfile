@@ -45,32 +45,70 @@ pipeline {
         }
 
         stage('Test') {
+
+            when {
+                expression {
+                    params.RUN_TESTS
+                }
+            }
+
             steps {
-                echo "RUN_TESTS = ${params.RUN_TESTS}"
+                echo "Running tests..."
 
                 sh '''
-                    echo "Running tests..."
+                    echo "Tests completed successfully"
                 '''
             }
         }
 
-        stage('Information') {
+        stage('Deploy to Dev') {
+
+            when {
+                expression {
+                    params.ENVIRONMENT == 'dev'
+                }
+            }
+
             steps {
-                echo "Application: ${env.APP_NAME}"
-                echo "Version: ${params.VERSION}"
-                echo "Environment: ${params.ENVIRONMENT}"
-                echo "Build: ${env.BUILD_NUMBER}"
+                echo "Deploying to DEV environment"
+            }
+        }
+
+        stage('Deploy to Staging') {
+
+            when {
+                expression {
+                    params.ENVIRONMENT == 'staging'
+                }
+            }
+
+            steps {
+                echo "Deploying to STAGING environment"
+            }
+        }
+
+        stage('Deploy to Production') {
+
+            when {
+                expression {
+                    params.ENVIRONMENT == 'prod'
+                }
+            }
+
+            steps {
+                echo "Deploying to PRODUCTION environment"
             }
         }
     }
 
     post {
+
         success {
-            echo "Pipeline completed successfully"
+            echo 'Pipeline completed successfully'
         }
 
         failure {
-            echo "Pipeline failed"
+            echo 'Pipeline failed'
         }
     }
 }
